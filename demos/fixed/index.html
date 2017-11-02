@@ -48,9 +48,13 @@
 
     <button id="camera-button" onclick="TopCodes.startStopVideoScan('video-canvas')">Start / Stop</button>
 
-    <button id="runCode" onclick="runCode()">run code</button>
+    <button id="startCamera" onclick="startCamera('video-canvas')">Start Camera</button>
 
-    <button id="showCode" onclick="showCode()">show code</button>
+    <button id="TakeSnapShot" onclick="TakeSnapShot('video-canvas')">Take snapshot</button>
+
+    <button id="runCode" onclick="runBlocklyCode()">run code</button>
+
+    <button id="showCode" onclick="showBlocklyCode()">show code</button>
 
     <button id="makeCode" onclick="connectBlocks()">connect blocks</button>    
 
@@ -78,31 +82,101 @@
       // body...
     }
 
-    //demoWorkspace.addChangeListener(mirrorEvent);
-
     function addToWorkSpace(blockToCreate) {
 
      var newBlock = demoWorkspace.newBlock(blockToCreate);
      newBlock.initSvg();
      newBlock.render();
-     //var createdBlock = new Blockly.Events.BlockCreate(newBlock);
-                console.log("what could be the problem");
-
-     //createdBlock.run(true);
-
      return newBlock;
-
-      // body...
     }
 
-      window.onload = welcomeAddress("To use an if block say if, " +
-                                    "To use a compare block say compare, " +
-                                    "To use a repeat block say repeat, ");
 
-    TopCodes.setVideoFrameCallback("video-canvas", function(jsonString) {
+
+    function connectBlocks(){
+
+      //test for connection
+      //if they are cose enough to each other in y and x then they are connected
+
+      var if_block = addToWorkSpace("design_provocation_if");
+      var condition_block = addToWorkSpace("red_block");
+
+
+
+      //test for red blue or green and connect 
+ 
+      var connection = if_block.getInput("dp_if").connection;   
+      var red_connection = condition_block.outputConnection; 
+      connection.connect(red_connection);
+
+
+      if (itsy_bitsy_TopCode.y < twinkleTopCode.y ){
+        connectItsyBitsy('dp_play',if_block);   
+        connectTwinkle('dp_else_play',if_block);             
+      }else{
+        connectTwinkle('dp_play',if_block);       
+        connectItsyBitsy('dp_else_play',if_block);
+      }
+   
+
+      //else error message 
+    }
+
+    function connectTwinkle(play_block,if_block){
+      var twinkle_block = addToWorkSpace("twinkle");      
+      var connection_play = if_block.getInput(play_block).connection;   
+      var twinkle_connection = twinkle_block.previousConnection; 
+      connection_play.connect(twinkle_connection);      
+    }
+
+    function connectItsyBitsy(play_block, if_block){
+      var itsy_bitsy_block = addToWorkSpace("itsy_bitsy");      
+      var connection_play_itsy = if_block.getInput(play_block).connection;   
+      var itsy_bitsy_connection = itsy_bitsy_block.previousConnection; 
+      connection_play_itsy.connect(itsy_bitsy_connection);    
+    }
+
+    function showBlocklyCode() {
+      // Generate JavaScript code and display it.
+      Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
+      var code = Blockly.JavaScript.workspaceToCode(demoWorkspace);
+      alert(code);
+    }
+
+
+    function runBlocklyCode() {
+      // Generate JavaScript code and run it.
+      window.LoopTrap = 1000;
+      Blockly.JavaScript.INFINITE_LOOP_TRAP = 'if (--window.LoopTrap == 0) throw "Infinite loop.";\n';
+      var code = Blockly.JavaScript.workspaceToCode(demoWorkspace);
+      Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
+      try {
+        eval(code);
+      } catch (e) {
+        alert(e);
+      }
+    }
+  
+
+    window.onload = welcomeAddress("To use an if block say if, " +
+                                  "To use a compare block say compare, " +
+                                  "To use a repeat block say repeat, ");
+
+  TopCodes.setVideoFrameCallback("video-canvas", function(jsonString) {
     var json = JSON.parse(jsonString);
     drawCodes(json.topcodes);
   });
+
+    function TakeSnapShot(canvasId){
+        //TopCodes.stopVideoScan(canvasId);
+        Blockly.mainWorkspace.clear();
+        if(OrderbyPosition()){
+            connectBlocks();
+            runBlocklyCode();
+        }else{
+          welcomeAddress("There is an error in your code");
+        }   
+    }
+   
 
   function drawCodes(topcodes) {
     var ctx = document.querySelector("#video-canvas").getContext('2d');
@@ -117,86 +191,37 @@
     }
   }
 
+var conditionTopCode;
+var itsy_bitsy_TopCode;
+var twinkleTopCode;
+
+var CONDITIONTOPCODE = 361;
+var TWINKLETOPCODE = 355;
+var ITSYBITSYTOPCODE = 357;
+
 function getCodes(topCode){
     switch (topCode.code){
-    case 31:
-      addToWorkSpace("controls_if");
+    case CONDITIONTOPCODE:
+      conditionTopCode = topCode;
       break;
-    case 361:
-      addToWorkSpace("logic_compare");
+    case ITSYBITSYTOPCODE:
+      twinkleTopCode = topCode;
       break;
-    case 227:
-      addToWorkSpace("controls_repeat_ext");
+    case TWINKLETOPCODE:
+      itsy_bitsy_TopCode = topCode;
     break;
-
-
   }
+}
+
+function OrderbyPosition(){
+  console.log("condition: " + conditionTopCode.y + " twinkle: " + twinkleTopCode.y + " itsybitsy: " + itsy_bitsy_TopCode.y);
+  return (((conditionTopCode.y > twinkleTopCode.y) && (conditionTopCode.y >  itsy_bitsy_TopCode.y)) || ((conditionTopCode.y < twinkleTopCode.y) && (conditionTopCode.y <  itsy_bitsy_TopCode.y)));
 }
 
 
 
-    function showCode() {
-      // Generate JavaScript code and display it.
-      Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
-      var code = Blockly.JavaScript.workspaceToCode(demoWorkspace);
-      alert(code);
-    }
 
 
-    function runCode() {
-      // Generate JavaScript code and run it.
-      window.LoopTrap = 1000;
-      Blockly.JavaScript.INFINITE_LOOP_TRAP = 'if (--window.LoopTrap == 0) throw "Infinite loop.";\n';
-      var code = Blockly.JavaScript.workspaceToCode(demoWorkspace);
-      Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
-      try {
-        eval(code);
-      } catch (e) {
-        alert(e);
-      }
-    }
-
-    function connectBlocks(){
-
-      //test for connection
-      //if they are cose enough to each other in y and x then they are connected
-
-      var if_block = addToWorkSpace("design_provocation_if");
-      var condition_block = addToWorkSpace("red_block");
-      var twinkle_block = addToWorkSpace("twinkle");
-      var itsy_bitsy_block = addToWorkSpace("itsy_bitsy");
-
-      //test for red blue or green and connect 
- 
-      var connection = if_block.getInput("dp_if").connection;   
-      var red_connection = condition_block.outputConnection; 
-      connection.connect(red_connection);
-
-      //test for itsybitsy
-
-      var connection_play = if_block.getInput("dp_play").connection;   
-      var twinkle_connection = twinkle_block.previousConnection; 
-      connection_play.connect(twinkle_connection);
-
-      var connection_play_itsy = if_block.getInput("dp_else_play").connection;   
-      var itsy_bitsy_connection = itsy_bitsy_block.previousConnection; 
-      connection_play_itsy.connect(itsy_bitsy_connection);      
-
-      //else error message 
-    }
-
-    function mirrorEvent(primaryEvent) {
-      if (primaryEvent.type == Blockly.Events.UI) {
-        return;  // Don't mirror UI events.
-      }
-      // Convert event to JSON.  This could then be transmitted across the net.
-      var json = primaryEvent.toJson();
-      primaryEvent.run(true);
-      console.log(json);
-      // Convert JSON back into an event, then execute it.
-      //var secondaryEvent = Blockly.Events.fromJson(json, secondaryWorkspace);
-      //secondaryEvent.run(true);
-    }
   </script>
 
 
