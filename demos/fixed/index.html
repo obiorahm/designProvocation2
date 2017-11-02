@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Blockly Demo: Fixed Blockly</title>
+  <script src="../../blockly_compressed.js"></script>
+  <script src="../../javascript_compressed.js"></script>  
+  <script type="text/javascript" src="../../generators/javascript/logic.js"></script>
+  <script src="js/new_blocks.js"></script>  
+  <script src="../../blocks_compressed.js"></script>
+  <script src="../../msg/js/en.js"></script>
+
+
+   <script src="js/topcodes.js"></script>  
+  <link rel="stylesheet" href="custom.css">
+  <style>
+    body {
+      background-color: #fff;
+      font-family: sans-serif;
+    }
+    h1 {
+      font-weight: normal;
+      font-size: 140%;
+    }
+  </style>
+</head>
+<body>
+  <h1><a href="https://developers.google.com/blockly/">Blockly</a> &gt;
+    <a href="../index.html">Demos</a> &gt; Fixed Blockly</h1>
+
+  <p>This is a simple demo of injecting Blockly into a fixed-sized 'div' element.</p>
+
+  <p>&rarr; More info on <a href="https://developers.google.com/blockly/guides/configure-blockly/web/fixed-size">injecting fixed-sized Blockly</a>&hellip;</p>
+
+  <div id="blocklyDiv" style="height: 480px; width: 600px;"></div>
+
+  <xml id="toolbox" style="display: none">
+    <block type="design_provocation_if"></block>
+    <block type="red_block"></block>   
+    <block type="twinkle"></block> 
+    <block type="itsy_bitsy"></block> 
+
+  </xml>
+
+    <submit  onclick="welcomeAddress('what block do you want')" >click Me!</submit>
+
+    <canvas id="video-canvas" width="1000" height="600" style="background: #ddd;"></canvas>
+
+    <button id="camera-button" onclick="TopCodes.startStopVideoScan('video-canvas')">Start / Stop</button>
+
+    <button id="runCode" onclick="runCode()">run code</button>
+
+    <button id="showCode" onclick="showCode()">show code</button>
+
+    <p class="hints"></p>
+    <div>
+        <p class="output"><em>...diagnostic messages</em></p>
+    </div>
+
+  <script>
+    var demoWorkspace = Blockly.inject('blocklyDiv',
+        {media: '../../media/',
+         toolbox: document.getElementById('toolbox')});         
+
+    function addToWorkSpace(blockToCreate) {
+
+     var newBlock = demoWorkspace.newBlock(blockToCreate);
+     var createdBlock = new Blockly.Events.BlockCreate(newBlock);
+                console.log("what could be the problem");
+
+     createdBlock.run(true);
+
+      // body...
+    }
+  </script>
+<script src='https://code.responsivevoice.org/responsivevoice.js'></script> 
+<script type="text/javascript" src="js/speechRecognition.js"></script>
+
+
+</body>
+<script type="text/javascript">
+  window.onload = welcomeAddress("To use an if block say if, " +
+                                    "To use a compare block say compare, " +
+                                    "To use a repeat block say repeat, ");
+
+    TopCodes.setVideoFrameCallback("video-canvas", function(jsonString) {
+    var json = JSON.parse(jsonString);
+    drawCodes(json.topcodes);
+  });
+
+  function drawCodes(topcodes) {
+    var ctx = document.querySelector("#video-canvas").getContext('2d');
+    ctx.fillStyle = "rgba(255, 0, 0, 0.3)";
+    for (i=0; i<topcodes.length; i++) {
+      ctx.beginPath();
+      ctx.arc(topcodes[i].x, topcodes[i].y, topcodes[i].radius, 0, Math.PI*2, true);
+      ctx.fill();
+
+      getCodes(topcodes[i]);
+
+    }
+  }
+
+function getCodes(topCode){
+    switch (topCode.code){
+    case 31:
+      addToWorkSpace("controls_if");
+      break;
+    case 361:
+      addToWorkSpace("logic_compare");
+      break;
+    case 227:
+      addToWorkSpace("controls_repeat_ext");
+    break;
+
+
+  }
+}
+
+    function showCode() {
+      // Generate JavaScript code and display it.
+      Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
+      var code = Blockly.JavaScript.workspaceToCode(demoWorkspace);
+      alert(code);
+    }
+
+
+    function runCode() {
+      // Generate JavaScript code and run it.
+      window.LoopTrap = 1000;
+      Blockly.JavaScript.INFINITE_LOOP_TRAP = 'if (--window.LoopTrap == 0) throw "Infinite loop.";\n';
+      var code = Blockly.JavaScript.workspaceToCode(demoWorkspace);
+      Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
+      try {
+        eval(code);
+      } catch (e) {
+        alert(e);
+      }
+    }
+</script>
+</html>
+
