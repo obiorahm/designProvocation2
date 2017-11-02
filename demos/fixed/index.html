@@ -52,10 +52,15 @@
 
     <button id="showCode" onclick="showCode()">show code</button>
 
+    <button id="makeCode" onclick="connectBlocks()">connect blocks</button>    
+
     <p class="hints"></p>
     <div>
         <p class="output"><em>...diagnostic messages</em></p>
     </div>
+
+  <script src='https://code.responsivevoice.org/responsivevoice.js'></script> 
+  <script type="text/javascript" src="js/speechRecognition.js"></script>
 
   <script>
     var demoWorkspace = Blockly.inject('blocklyDiv',
@@ -72,14 +77,25 @@
 
       // body...
     }
-  </script>
-<script src='https://code.responsivevoice.org/responsivevoice.js'></script> 
-<script type="text/javascript" src="js/speechRecognition.js"></script>
 
+    //demoWorkspace.addChangeListener(mirrorEvent);
 
-</body>
-<script type="text/javascript">
-  window.onload = welcomeAddress("To use an if block say if, " +
+    function addToWorkSpace(blockToCreate) {
+
+     var newBlock = demoWorkspace.newBlock(blockToCreate);
+     newBlock.initSvg();
+     newBlock.render();
+     //var createdBlock = new Blockly.Events.BlockCreate(newBlock);
+                console.log("what could be the problem");
+
+     //createdBlock.run(true);
+
+     return newBlock;
+
+      // body...
+    }
+
+      window.onload = welcomeAddress("To use an if block say if, " +
                                     "To use a compare block say compare, " +
                                     "To use a repeat block say repeat, ");
 
@@ -117,6 +133,8 @@ function getCodes(topCode){
   }
 }
 
+
+
     function showCode() {
       // Generate JavaScript code and display it.
       Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
@@ -137,6 +155,59 @@ function getCodes(topCode){
         alert(e);
       }
     }
+
+    function connectBlocks(){
+
+      //test for connection
+      //if they are cose enough to each other in y and x then they are connected
+
+      var if_block = addToWorkSpace("design_provocation_if");
+      var condition_block = addToWorkSpace("red_block");
+      var twinkle_block = addToWorkSpace("twinkle");
+      var itsy_bitsy_block = addToWorkSpace("itsy_bitsy");
+
+      //test for red blue or green and connect 
+ 
+      var connection = if_block.getInput("dp_if").connection;   
+      var red_connection = condition_block.outputConnection; 
+      connection.connect(red_connection);
+
+      //test for itsybitsy
+
+      var connection_play = if_block.getInput("dp_play").connection;   
+      var twinkle_connection = twinkle_block.previousConnection; 
+      connection_play.connect(twinkle_connection);
+
+      var connection_play_itsy = if_block.getInput("dp_else_play").connection;   
+      var itsy_bitsy_connection = itsy_bitsy_block.previousConnection; 
+      connection_play_itsy.connect(itsy_bitsy_connection);      
+
+      //else error message 
+    }
+
+    function mirrorEvent(primaryEvent) {
+      if (primaryEvent.type == Blockly.Events.UI) {
+        return;  // Don't mirror UI events.
+      }
+      // Convert event to JSON.  This could then be transmitted across the net.
+      var json = primaryEvent.toJson();
+      primaryEvent.run(true);
+      console.log(json);
+      // Convert JSON back into an event, then execute it.
+      //var secondaryEvent = Blockly.Events.fromJson(json, secondaryWorkspace);
+      //secondaryEvent.run(true);
+    }
+  </script>
+
+
+
+</body>
+<script type="text/javascript">
+
+
+
+
+
 </script>
 </html>
 
