@@ -53,13 +53,13 @@ recognition.onresult = function(event) {
   //bg.style.backgroundColor = color;
   switch (response){
     case "if":
-      addToWorkSpace("controls_if");
+      addToWorkSpace("design_provocation_if");
       break;
-    case "compare":
-      addToWorkSpace("logic_compare");
+    case "twinkle":
+      addToWorkSpace("twinkle");
       break;
-    case "repeat":
-      addToWorkSpace("controls_repeat_ext");
+    case "spider":
+      addToWorkSpace("itsy_bitsy");
     break;
 
 

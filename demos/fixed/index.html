@@ -48,8 +48,6 @@
 
     <button id="camera-button" onclick="TopCodes.startStopVideoScan('video-canvas')">Start / Stop</button>
 
-    <button id="startCamera" onclick="startCamera('video-canvas')">Start Camera</button>
-
     <button id="TakeSnapShot" onclick="TakeSnapShot('video-canvas')">Take snapshot</button>
 
     <button id="runCode" onclick="runBlocklyCode()">run code</button>
@@ -158,8 +156,8 @@
   
 
     window.onload = welcomeAddress("To use an if block say if, " +
-                                  "To use a compare block say compare, " +
-                                  "To use a repeat block say repeat, ");
+                                  "To use the itsy bitsy spider block say spider, " +
+                                  "To use the twinkle twinkle little star block say twinkle, ");
 
   TopCodes.setVideoFrameCallback("video-canvas", function(jsonString) {
     var json = JSON.parse(jsonString);
