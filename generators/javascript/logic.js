@@ -128,6 +128,98 @@ Blockly.JavaScript['logic_ternary'] = function(block) {
   return [code, Blockly.JavaScript.ORDER_CONDITIONAL];
 };
 
+Blockly.JavaScript['jelly'] = function(block) {
+  // TODO: Assemble JavaScript into code variable.
+  var code = "\"" + "jelly" + "\"";
+  // TODO: Change ORDER_NONE to the correct strength.
+  return [code, Blockly.JavaScript.ORDER_NONE];
+};
+
+Blockly.JavaScript['peanut_butter'] = function(block) {
+  // TODO: Assemble JavaScript into code variable.
+  var code = "\"" + "peanut butter" + "\"";
+  // TODO: Change ORDER_NONE to the correct strength.
+  return [code, Blockly.JavaScript.ORDER_NONE];
+};
+
+Blockly.JavaScript['pjb'] = function(block) {
+  // TODO: Assemble JavaScript into code variable.
+  var code = "\"" + "PBJ" + "\"";
+  // TODO: Change ORDER_NONE to the correct strength.
+  return [code, Blockly.JavaScript.ORDER_NONE];
+};
+
+
+Blockly.JavaScript['make_jelly'] = function(block) {
+  // TODO: Assemble JavaScript into code variable.
+  var code = "\"" + "jelly" + "\"";
+  // TODO: Change ORDER_NONE to the correct strength.
+  return [code, Blockly.JavaScript.ORDER_NONE];
+};
+
+Blockly.JavaScript['make_peanut_butter'] = function(block) {
+  // TODO: Assemble JavaScript into code variable.
+  var code = "\"" + "peanut butter" + "\"";
+  // TODO: Change ORDER_NONE to the correct strength.
+  return [code, Blockly.JavaScript.ORDER_NONE];
+};
+
+Blockly.JavaScript['make_pjb'] = function(block) {
+  // TODO: Assemble JavaScript into code variable.
+  var code = "\"" + "PBJ" + "\"";
+  // TODO: Change ORDER_NONE to the correct strength.
+  return [code, Blockly.JavaScript.ORDER_NONE];
+};
+
+Blockly.JavaScript['sam'] = function(block) {
+  // TODO: Assemble JavaScript into code variable.
+  var code = "'SAM'"
+  // TODO: Change ORDER_NONE to the correct strength.
+  return [code, Blockly.JavaScript.ORDER_NONE];
+};
+
+Blockly.JavaScript['ruth'] = function(block) {
+  // TODO: Assemble JavaScript into code variable.
+  var code = "'RUTH'"
+  // TODO: Change ORDER_NONE to the correct strength.
+  return [code, Blockly.JavaScript.ORDER_NONE];
+};
+
+Blockly.JavaScript['sam_or_ruth'] = function(block) {
+  var value_name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC);
+  // TODO: Assemble JavaScript into code variable.
+  var code = '...';
+  // TODO: Change ORDER_NONE to the correct strength.
+  return [code, Blockly.JavaScript.ORDER_NONE];
+};
+
+Blockly.JavaScript['if_sam_ruth'] = function(block) {
+  var value_sam_ruth = Blockly.JavaScript.valueToCode(block, 'sam_ruth', Blockly.JavaScript.ORDER_ATOMIC);
+  var statements_make = Blockly.JavaScript.statementToCode(block, 'make');
+  var statements_or_make = Blockly.JavaScript.statementToCode(block, 'or_make');
+  // TODO: Assemble JavaScript into code variable.
+  var code = "if (" + value_sam_ruth + "){ \n " + 
+              statements_make + '\n } \n' +
+              'else{ ' + statements_or_make +' \n }';
+  return code;
+};
+
+
+Blockly.JavaScript['sam_likes_y'] = function(block) {
+  var value_food_x = Blockly.JavaScript.valueToCode(block, 'food_x', Blockly.JavaScript.ORDER_ATOMIC);
+  // TODO: Assemble JavaScript into code variable.
+  var code = '...;\n';
+  return code;
+};
+
+Blockly.JavaScript['ruth_likes_y'] = function(block) {
+  var value_food_x = Blockly.JavaScript.valueToCode(block, 'food_x', Blockly.JavaScript.ORDER_ATOMIC);
+  // TODO: Assemble JavaScript into code variable.
+  var code = '...;\n';
+  return code;
+};
+
+
 //https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#5ds72z
 Blockly.JavaScript['design_provocation_if'] = function(block) {
   var value_dp_if = Blockly.JavaScript.valueToCode(block, 'dp_if', Blockly.JavaScript.ORDER_ATOMIC) || "'BLUE'";

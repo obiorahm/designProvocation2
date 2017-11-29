@@ -35,10 +35,21 @@
   <div id="blocklyDiv" style="height: 480px; width: 600px;"></div>
 
   <xml id="toolbox" style="display: none">
-    <block type="design_provocation_if"></block>
-    <block type="red_block"></block>   
-    <block type="twinkle"></block> 
-    <block type="itsy_bitsy"></block> 
+    <block type="sam_likes_y"></block> 
+    <block type="ruth_likes_y"></block> 
+    <block type="jelly"></block> 
+    <block type="peanut_butter"></block> 
+    <block type="pjb"></block> 
+    <block type="make_jelly"></block> 
+    <block type="make_peanut_butter"></block> 
+    <block type="make_pjb"></block>     
+    <block type="if_sam_ruth"></block> 
+    <block type="ruth"></block> 
+    <block type="sam"></block> 
+
+
+
+
 
   </xml>
 
@@ -46,7 +57,7 @@
 
     <canvas id="video-canvas" width="1000" height="600" style="background: #ddd;"></canvas>
 
-    <button id="camera-button" onclick="TopCodes.startStopVideoScan('video-canvas')">Start / Stop</button>
+    <button id="camera-button" onclick="startStopVideoScan('video-canvas')">Start / Stop</button>
 
     <button id="TakeSnapShot" onclick="TakeSnapShot('video-canvas')">Take snapshot</button>
 
@@ -89,49 +100,14 @@
     }
 
 
+    function connectAnyOutputBlock(play_block, main_block, blockToConnect){
+      var newBlockToConnect = addToWorkSpace(blockToConnect);
+      var connectionToIfBlock = main_block.getInput(play_block).connection;
+      var newBlockConnection = newBlockToConnect.outputConnection;
+      connectionToIfBlock.connect(newBlockConnection);
+    }    
+    
 
-    function connectBlocks(){
-
-      //test for connection
-      //if they are cose enough to each other in y and x then they are connected
-
-      var if_block = addToWorkSpace("design_provocation_if");
-      var condition_block = addToWorkSpace("red_block");
-
-
-
-      //test for red blue or green and connect 
- 
-      var connection = if_block.getInput("dp_if").connection;   
-      var red_connection = condition_block.outputConnection; 
-      connection.connect(red_connection);
-
-
-      if (itsy_bitsy_TopCode.y < twinkleTopCode.y ){
-        connectItsyBitsy('dp_play',if_block);   
-        connectTwinkle('dp_else_play',if_block);             
-      }else{
-        connectTwinkle('dp_play',if_block);       
-        connectItsyBitsy('dp_else_play',if_block);
-      }
-   
-
-      //else error message 
-    }
-
-    function connectTwinkle(play_block,if_block){
-      var twinkle_block = addToWorkSpace("twinkle");      
-      var connection_play = if_block.getInput(play_block).connection;   
-      var twinkle_connection = twinkle_block.previousConnection; 
-      connection_play.connect(twinkle_connection);      
-    }
-
-    function connectItsyBitsy(play_block, if_block){
-      var itsy_bitsy_block = addToWorkSpace("itsy_bitsy");      
-      var connection_play_itsy = if_block.getInput(play_block).connection;   
-      var itsy_bitsy_connection = itsy_bitsy_block.previousConnection; 
-      connection_play_itsy.connect(itsy_bitsy_connection);    
-    }
 
     function showBlocklyCode() {
       // Generate JavaScript code and display it.
@@ -155,9 +131,9 @@
     }
   
 
-    window.onload = welcomeAddress("To use an if block say if, " +
+    /*window.onload = welcomeAddress("To use an if block say if, " +
                                   "To use the itsy bitsy spider block say spider, " +
-                                  "To use the twinkle twinkle little star block say twinkle, ");
+                                  "To use the twinkle twinkle little star block say twinkle, ");*/
 
   TopCodes.setVideoFrameCallback("video-canvas", function(jsonString) {
     var json = JSON.parse(jsonString);
@@ -166,14 +142,158 @@
 
     function TakeSnapShot(canvasId){
         //TopCodes.stopVideoScan(canvasId);
+        var if_block;
         Blockly.mainWorkspace.clear();
-        if(OrderbyPosition()){
-            connectBlocks();
-            runBlocklyCode();
-        }else{
-          welcomeAddress("There is an error in your code");
-        }   
+        if (syntaxCheck()){
+            addAllBlocksToWorkSpace();
+
+           if (syntaxCheckWhatTheyLike()) {
+              orderWhatTheyLike();
+            }else {
+              return; 
+          }
+          if (syntaxCheckWhoToTestFor()){
+            if_block = chooseWhoToTestFor();
+          } else {
+            return;
+          };
+          if (syntaxCheckWhatToMake()){
+              orderWhatToMake(if_block);
+            }
+            
+            //connectBlocks();
+            //runBlocklyCode();
+        }
     }
+
+    function syntaxCheckWhatTheyLike(){
+      if (whatTheylike.length < 2){
+        welcomeAddress("Enter what both of your friends like");
+        return false;
+      }
+      return true;
+    }
+
+    function syntaxCheckWhoToTestFor(){
+      if (whoToTestForName.length < 1){
+        welcomeAddress("I don't know you to make sandwiches for")
+        return false;
+      }
+      return true;
+    }
+
+    function syntaxCheckWhatToMake(){
+      if (whatToMakeName.length < 2){
+        welcomeAddress("One of your make blocks are empty")
+        return false;
+      }
+      return true;
+    }
+
+    function orderWhatTheyLike(){
+
+      if (whatTheylike[0].y > whatTheylike[1].y){
+        var sam_likes = addToWorkSpace("sam_likes_y");
+        connectAnyOutputBlock('food_x',sam_likes, whatTheylikeName[0]);              
+
+        var ruth_likes = addToWorkSpace("ruth_likes_y");
+        ruth_likes.moveBy(0,40);
+        connectAnyOutputBlock('food_x', ruth_likes, whatTheylikeName[1]);
+
+      }else{
+        var sam_likes = addToWorkSpace("sam_likes_y");
+        connectAnyOutputBlock('food_x',sam_likes, whatTheylikeName[1]);
+
+        var ruth_likes = addToWorkSpace("ruth_likes_y");
+        ruth_likes.moveBy(0,40);
+        connectAnyOutputBlock('food_x', ruth_likes, whatTheylikeName[0]);              
+
+      }
+
+    }
+
+
+
+    function chooseWhoToTestFor(){
+      var if_block = addToWorkSpace("if_sam_ruth");
+        if_block.moveBy(0,80);
+
+      connectAnyOutputBlock("sam_ruth", if_block, whoToTestForName[0]);
+      return if_block;
+    }
+
+    function orderWhatToMake(if_block){
+      if(whatToMake[0].y > whatToMake[1].y){
+        connectAnyOutputBlock('make', if_block, whatToMakeName[0]);
+        connectAnyOutputBlock('or_make', if_block, whatToMakeName[1])
+      }else{
+        connectAnyOutputBlock('make', if_block, whatToMakeName[1]);
+        connectAnyOutputBlock('or_make', if_block, whatToMakeName[0])        
+      }
+    }
+
+    var whatTheylike = [];
+    var whatTheylikeName = [];
+
+    var whotoTestFor = [];
+    var whoToTestForName = [];
+
+    var whatToMake = [];
+    var whatToMakeName = [];
+
+    function addAllBlocksToWorkSpace(){
+
+      if (j_topCode != 0){
+        //addToWorkSpace("jelly"); 
+        whatTheylike.push(j_topCode);  
+        whatTheylikeName.push("jelly")      
+      }
+
+      if (pbj_topCode != 0){
+        //addToWorkSpace("pjb");
+        whatTheylike.push(pbj_topCode);
+        whatTheylikeName.push("pjb");
+      }
+
+      if(pb_topCode != 0){
+        //addToWorkSpace("peanut_butter");      
+        whatTheylike.push(pb_topCode);
+        whatTheylikeName.push("peanut_butter");
+      }
+
+
+      if (is_sam_topCode != 0){
+        //addToWorkSpace("sam");
+        whotoTestFor.push(is_sam_topCode);
+        whoToTestForName.push("sam");
+      }
+
+      if (is_ruth_topCode != 0){
+        //addToWorkSpace("ruth");
+        whotoTestFor.push(is_ruth_topCode); 
+        whoToTestForName.push("ruth");    
+      }
+
+      if (make_pbj_topCode != 0){
+        //addToWorkSpace("make_pjb");
+        whatToMake.push(make_pb_topCode);
+        whatToMakeName.push("make_pjb");
+      }
+
+      if (make_j_topCode != 0){
+        //addToWorkSpace("make_jelly");
+        whatToMake.push(make_j_topCode);
+        whatToMakeName.push("make_jelly");
+      }
+
+      if (make_pb_topCode != 0){
+        //addToWorkSpace("make_peanut_butter");
+        whatToMake.push(make_pb_topCode);
+        whatToMakeName.push("make_peanut_butter");
+      }
+    } 
+
+
    
 
   function drawCodes(topcodes) {
@@ -193,9 +313,97 @@ var conditionTopCode;
 var itsy_bitsy_TopCode;
 var twinkleTopCode;
 
+var pb_topCode;
+var j_topCode;
+var pbj_topCode;
+
+var is_sam_topCode;
+var is_ruth_topCode;
+
+var make_pbj_topCode;
+var make_pb_topCode;
+var make_j_topCode;
+
 var CONDITIONTOPCODE = 361;
 var TWINKLETOPCODE = 355;
 var ITSYBITSYTOPCODE = 357;
+
+var JELLY_TOPCODE = 79;
+var PB_TOPCODE = 87;
+var PBJ_TOPCODE = 91;
+
+var IS_SAM_TOPCODE = 31;
+var IS_RUTH_TOPCODE = 47;
+
+var MAKE_PBJ_TOPCODE = 55;
+var MAKE_PB_TOPCODE = 59;
+var MAKE_J_TOPCODE = 61;
+
+
+function clearVariables(){
+  pb_topCode = 0;
+  pbj_topCode = 0;
+  j_topCode = 0;
+  is_sam_topCode = 0;
+  is_ruth_topCode = 0;
+  make_pbj_topCode = 0;
+  make_pb_topCode = 0;
+  make_j_topCode = 0;
+} 
+
+//attempting to override StartStopVideoScan
+
+function startStopVideoScan(canvasId) {
+  if (TopCodes._mediaStreams[canvasId]){
+    TopCodes.stopVideoScan(canvasId);
+  }else{
+    clearVariables();
+    TopCodes.startVideoScan(canvasId);
+  }
+}
+
+function syntaxCheck(){
+  // check that either sam or ruth like either peanut butter or jelly or both 
+  if (pbj_topCode == 0 && pb_topCode == 0 && j_topCode == 0){
+    welcomeAddress("How do your friends like their sandwich?");
+    return false;
+  }
+  //check for condition block
+  if (is_sam_topCode == 0 && is_ruth_topCode == 0){
+    welcomeAddress("I can't make a sandwich unless I know who is coming over")
+    return false;
+  }
+
+  //check for empty make boxes 
+  var countSandwiches = 0;
+  countSandwiches = make_pb_topCode == 0 ? 0 : 1;
+  countSandwiches = make_pbj_topCode == 0 ? countSandwiches : countSandwiches + 1;
+  countSandwiches = make_j_topCode == 0 ? countSandwiches : countSandwiches + 1;
+  if (countSandwiches < 2){
+    welcomeAddress("I don't know what type of sandwich to make");
+    return false;
+  }
+
+  // check how sam prefers his sandwich
+  if (is_sam_topCode != 0){
+    if((is_sam_topCode.y > make_pbj_topCode.y) ||
+      (is_sam_topCode.y > make_pb_topCode.y) ||
+      (is_sam_topCode.y > make_j_topCode.y))
+      return true;
+  }
+
+  // check how ruth likes her sandwich
+  if (is_ruth_topCode != 0){
+    if ((is_ruth_topCode.y > make_pbj_topCode.y) ||
+        (is_ruth_topCode.y > make_pb_topCode.y) ||
+        (is_ruth_topCode.y > make_j_topCode.y)){
+      return true;
+    } else{
+      welcomeAddress("There is an error in your code")
+    }
+  }
+
+}
 
 function getCodes(topCode){
     switch (topCode.code){
@@ -207,7 +415,31 @@ function getCodes(topCode){
       break;
     case TWINKLETOPCODE:
       itsy_bitsy_TopCode = topCode;
-    break;
+      break;
+    case IS_SAM_TOPCODE:
+      is_sam_topCode = topCode;
+      break;
+    case IS_RUTH_TOPCODE:
+      is_ruth_topCode = topCode;
+      break;
+    case MAKE_PBJ_TOPCODE:
+      make_pbj_topCode = topCode;
+      break;
+    case MAKE_J_TOPCODE:
+      make_j_topCode = topCode;
+      break;
+    case MAKE_PB_TOPCODE:
+      make_pb_topCode = topCode;
+      break;
+    case JELLY_TOPCODE:
+      j_topCode = topCode;
+      break;
+    case PB_TOPCODE:
+      pb_topCode = topCode;
+      break;
+    case PBJ_TOPCODE:
+      pbj_topCode = topCode;
+      break;
   }
 }
 
