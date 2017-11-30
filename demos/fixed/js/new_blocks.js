@@ -73,7 +73,7 @@ Blockly.Blocks['peanut_butter'] = {
 Blockly.Blocks['pjb'] = {
   init: function() {
     this.appendDummyInput()
-        .appendField("PBJ");
+        .appendField("P B J");
     this.setOutput(true, null);
     this.setColour(125);
  this.setTooltip("");

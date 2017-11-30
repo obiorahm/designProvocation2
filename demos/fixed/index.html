@@ -144,9 +144,8 @@
         //TopCodes.stopVideoScan(canvasId);
         var if_block;
         Blockly.mainWorkspace.clear();
-        if (syntaxCheck()){
-            addAllBlocksToWorkSpace();
 
+            addAllBlocksToWorkSpace();
            if (syntaxCheckWhatTheyLike()) {
               orderWhatTheyLike();
             }else {
@@ -157,13 +156,13 @@
           } else {
             return;
           };
-          if (syntaxCheckWhatToMake()){
+          if (syntaxCheckWhatToMake() && syntaxCheck()){
               orderWhatToMake(if_block);
-            }
-            
+              runBlocklyCode();
+            }            
             //connectBlocks();
             //runBlocklyCode();
-        }
+
     }
 
     function syntaxCheckWhatTheyLike(){
@@ -276,7 +275,7 @@
 
       if (make_pbj_topCode != 0){
         //addToWorkSpace("make_pjb");
-        whatToMake.push(make_pb_topCode);
+        whatToMake.push(make_pbj_topCode);
         whatToMakeName.push("make_pjb");
       }
 
@@ -349,6 +348,15 @@ function clearVariables(){
   make_pbj_topCode = 0;
   make_pb_topCode = 0;
   make_j_topCode = 0;
+
+  whatTheylike = [];
+  whatTheylikeName = [];
+
+  whotoTestFor = [];
+  whoToTestForName = [];
+
+  whatToMake = [];
+  whatToMakeName = [];  
 } 
 
 //attempting to override StartStopVideoScan
@@ -356,6 +364,7 @@ function clearVariables(){
 function startStopVideoScan(canvasId) {
   if (TopCodes._mediaStreams[canvasId]){
     TopCodes.stopVideoScan(canvasId);
+    clearVariables();    
   }else{
     clearVariables();
     TopCodes.startVideoScan(canvasId);
@@ -363,44 +372,15 @@ function startStopVideoScan(canvasId) {
 }
 
 function syntaxCheck(){
-  // check that either sam or ruth like either peanut butter or jelly or both 
-  if (pbj_topCode == 0 && pb_topCode == 0 && j_topCode == 0){
-    welcomeAddress("How do your friends like their sandwich?");
-    return false;
-  }
-  //check for condition block
-  if (is_sam_topCode == 0 && is_ruth_topCode == 0){
-    welcomeAddress("I can't make a sandwich unless I know who is coming over")
-    return false;
-  }
-
-  //check for empty make boxes 
-  var countSandwiches = 0;
-  countSandwiches = make_pb_topCode == 0 ? 0 : 1;
-  countSandwiches = make_pbj_topCode == 0 ? countSandwiches : countSandwiches + 1;
-  countSandwiches = make_j_topCode == 0 ? countSandwiches : countSandwiches + 1;
-  if (countSandwiches < 2){
-    welcomeAddress("I don't know what type of sandwich to make");
-    return false;
-  }
-
-  // check how sam prefers his sandwich
   if (is_sam_topCode != 0){
-    if((is_sam_topCode.y > make_pbj_topCode.y) ||
-      (is_sam_topCode.y > make_pb_topCode.y) ||
-      (is_sam_topCode.y > make_j_topCode.y))
-      return true;
+    //check number of make blocks after sam condition
+    if ((whatToMake[0].y < is_sam_topCode.y) && (whatToMake[1].y < is_sam_topCode.y)) return true;
   }
 
   // check how ruth likes her sandwich
   if (is_ruth_topCode != 0){
-    if ((is_ruth_topCode.y > make_pbj_topCode.y) ||
-        (is_ruth_topCode.y > make_pb_topCode.y) ||
-        (is_ruth_topCode.y > make_j_topCode.y)){
-      return true;
-    } else{
-      welcomeAddress("There is an error in your code")
-    }
+    if ((whatToMake[0].y < is_ruth_topCode.y) && (whatToMake[1].y < is_ruth_topCode.y)) return true;    
+      welcomeAddress("You may have ordered your blocks incorrectly");
   }
 
 }
@@ -443,10 +423,6 @@ function getCodes(topCode){
   }
 }
 
-function OrderbyPosition(){
-  console.log("condition: " + conditionTopCode.y + " twinkle: " + twinkleTopCode.y + " itsybitsy: " + itsy_bitsy_TopCode.y);
-  return (((conditionTopCode.y > twinkleTopCode.y) && (conditionTopCode.y >  itsy_bitsy_TopCode.y)) || ((conditionTopCode.y < twinkleTopCode.y) && (conditionTopCode.y <  itsy_bitsy_TopCode.y)));
-}
 
 </script>
 

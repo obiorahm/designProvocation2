@@ -188,19 +188,21 @@ Blockly.JavaScript['ruth'] = function(block) {
 Blockly.JavaScript['sam_or_ruth'] = function(block) {
   var value_name = Blockly.JavaScript.valueToCode(block, 'NAME', Blockly.JavaScript.ORDER_ATOMIC);
   // TODO: Assemble JavaScript into code variable.
-  var code = '...';
+  var code = value_name;
   // TODO: Change ORDER_NONE to the correct strength.
   return [code, Blockly.JavaScript.ORDER_NONE];
 };
 
 Blockly.JavaScript['if_sam_ruth'] = function(block) {
   var value_sam_ruth = Blockly.JavaScript.valueToCode(block, 'sam_ruth', Blockly.JavaScript.ORDER_ATOMIC);
-  var statements_make = Blockly.JavaScript.statementToCode(block, 'make');
-  var statements_or_make = Blockly.JavaScript.statementToCode(block, 'or_make');
+  var statements_make = Blockly.JavaScript.valueToCode(block, 'make');
+  var statements_or_make = Blockly.JavaScript.valueToCode(block, 'or_make');
   // TODO: Assemble JavaScript into code variable.
-  var code = "if (" + value_sam_ruth + "){ \n " + 
+  /*var code = "if (" + value_sam_ruth + "){ \n " + 
               statements_make + '\n } \n' +
-              'else{ ' + statements_or_make +' \n }';
+              'else{ ' + statements_or_make +' \n }';*/
+  var whatTheyLike = eval(value_sam_ruth) == "RUTH" ? "ruth" : "sam";
+  var code = "welcomeAddress( ' "+ eval(value_sam_ruth) + " ' + 'likes ' + " +  whatTheyLike + " + ' and we are serving '  + " + statements_make +" );";
   return code;
 };
 
@@ -208,54 +210,14 @@ Blockly.JavaScript['if_sam_ruth'] = function(block) {
 Blockly.JavaScript['sam_likes_y'] = function(block) {
   var value_food_x = Blockly.JavaScript.valueToCode(block, 'food_x', Blockly.JavaScript.ORDER_ATOMIC);
   // TODO: Assemble JavaScript into code variable.
-  var code = '...;\n';
+  var code = " var sam = " + value_food_x + ';\n';
   return code;
 };
 
 Blockly.JavaScript['ruth_likes_y'] = function(block) {
   var value_food_x = Blockly.JavaScript.valueToCode(block, 'food_x', Blockly.JavaScript.ORDER_ATOMIC);
   // TODO: Assemble JavaScript into code variable.
-  var code = '...;\n';
+  var code = "var ruth = "  + value_food_x +';\n';
   return code;
 };
 
-
-//https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#5ds72z
-Blockly.JavaScript['design_provocation_if'] = function(block) {
-  var value_dp_if = Blockly.JavaScript.valueToCode(block, 'dp_if', Blockly.JavaScript.ORDER_ATOMIC) || "'BLUE'";
-  var statements_dp_play = Blockly.JavaScript.statementToCode(block, 'dp_play');
-  var statements_dp_else_play = Blockly.JavaScript.statementToCode(block, 'dp_else_play');
-  // TODO: Assemble JavaScript into code variable.
-  var code = "if (" + value_dp_if + "== 'RED'){ \n " + 
-              statements_dp_play + '\n } \n' +
-              'else{ ' + statements_dp_else_play +' \n }';
-  return code;
-};
-
-
-//https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#znc3at
-//Condition red_block
-Blockly.JavaScript['red_block'] = function(block) {
-  // TODO: Assemble JavaScript into code variable.
-  var code = "'RED'"
-  // TODO: Change ORDER_NONE to the correct strength.
-  return [code, Blockly.JavaScript.ORDER_NONE];
-};
-
-//https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#zecabc
-//play twinkle twinkle little star
-Blockly.JavaScript['twinkle'] = function(block) {
-  // TODO: Assemble JavaScript into code variable.
-  var code = "audio = new Audio('audio/TwinkleTwinkleLittleStar.mp3'); audio.play();";
-  return code;
-};
-
-//https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#nc5hsi
-//play the itsy bitsy spider
-
-Blockly.JavaScript['itsy_bitsy'] = function(block) {
-  // TODO: Assemble JavaScript into code variable.
-  var code = "var audio = new Audio('audio/ItsyBitsySpider.mp3'); audio.play();";
-  // TODO: Change ORDER_NONE to the correct strength.
-  return code;
-};
